@@ -23,6 +23,8 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+def segmentWriteKey = localProperties.getProperty('segment.writeKey')
+
 android {
     namespace = "com.example.favorite_places"
     compileSdk = flutter.compileSdkVersion
@@ -42,6 +44,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        manifestPlaceholders.put("segmentWriteKey", segmentWriteKey)
     }
 
     buildTypes {
