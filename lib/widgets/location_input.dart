@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
@@ -11,6 +15,9 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   Location? pickedLocation;
   bool _isGettingLocation = false;
+
+  final String? baseUrl = dotenv.env["GOOGLE_MAP_BASE_URL"];
+  final String? apiKey = dotenv.env["GOOGLE_MAP_API_KEY"];
 
   void get _currentLocation async {
     Location location = Location();
@@ -40,13 +47,19 @@ class _LocationInputState extends State<LocationInput> {
     });
 
     locationData = await location.getLocation();
+    final lat = locationData.latitude;
+    final lng = locationData.longitude;
+
+    final url = Uri.parse(
+      '$baseUrl?latlng=$lat,$lng&key=$apiKey',
+    );
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+    final address = resData['results'][0]['formatted_address'];
 
     setState(() {
       _isGettingLocation = false;
     });
-
-    print(locationData.latitude);
-    print(locationData.longitude);
   }
 
   @override

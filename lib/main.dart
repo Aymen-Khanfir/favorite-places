@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:favorite_places/screens/places.dart';
 
@@ -29,7 +32,12 @@ final theme = ThemeData.dark().copyWith(
   ),
 );
 
-void main() {
+void main() async {
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    log(e.toString());
+  }
   runApp(const ProviderScope(child: MyApp()));
 }
 
