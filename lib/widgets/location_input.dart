@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:favorite_places/models/place.dart';
+
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
 
@@ -13,7 +15,7 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  Location? pickedLocation;
+  PlaceLocation? _pickedLocation;
   bool _isGettingLocation = false;
 
   final String? baseUrl = dotenv.env["GOOGLE_MAP_BASE_URL"];
@@ -50,6 +52,10 @@ class _LocationInputState extends State<LocationInput> {
     final lat = locationData.latitude;
     final lng = locationData.longitude;
 
+    if (lat == null || lng == null) {
+      return;
+    }
+
     final url = Uri.parse(
       '$baseUrl?latlng=$lat,$lng&key=$apiKey',
     );
@@ -58,6 +64,11 @@ class _LocationInputState extends State<LocationInput> {
     final address = resData['results'][0]['formatted_address'];
 
     setState(() {
+      _pickedLocation = PlaceLocation(
+        latitude: lat,
+        longitude: lng,
+        address: address,
+      );
       _isGettingLocation = false;
     });
   }
