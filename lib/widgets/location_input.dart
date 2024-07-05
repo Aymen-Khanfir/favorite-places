@@ -21,6 +21,16 @@ class _LocationInputState extends State<LocationInput> {
   final String? baseUrl = dotenv.env["GOOGLE_MAP_BASE_URL"];
   final String? apiKey = dotenv.env["GOOGLE_MAP_API_KEY"];
 
+  String get locationImage {
+    if (_pickedLocation == null) {
+      return '';
+    }
+
+    final lat = _pickedLocation!.latitude;
+    final lng = _pickedLocation!.longitude;
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=$apiKey';
+  }
+
   void get _currentLocation async {
     Location location = Location();
 
@@ -82,6 +92,15 @@ class _LocationInputState extends State<LocationInput> {
             color: Theme.of(context).colorScheme.onSurface,
           ),
     );
+
+    if (_pickedLocation != null) {
+      previewContent = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
 
     if (_isGettingLocation == true) {
       previewContent = const CircularProgressIndicator();
