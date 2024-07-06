@@ -26,7 +26,7 @@ Future<Database> get _database async {
 class UserPlacesNotifier extends StateNotifier<List<Place>> {
   UserPlacesNotifier() : super(const []);
 
-  void loadPlaces() async {
+  Future<void> loadPlaces() async {
     final db = await _database;
     final data = await db.query('user_places');
     final places = data
